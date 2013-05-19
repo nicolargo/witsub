@@ -12,13 +12,13 @@ data_files = [
 
 setup(
     name='witsub',
-    version='1.0',
+    version='1.1',
     description="A command line tool to download movies subtitles",
     long_description=open('README.md').read(),
     author='Nicolas Hennion',
     author_email='nicolas@nicolargo.com',
     url='https://github.com/nicolargo/witsub',
-    download_url='https://s3.amazonaws.com/witsub/witsub-1.0.tar.gz',
+    download_url='https://s3.amazonaws.com/witsub/witsub-1.1.tar.gz',
     license="LGPL",
     keywords="cli video subtitle",
     packages=['witsub'],
