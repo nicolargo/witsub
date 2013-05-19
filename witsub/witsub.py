@@ -53,10 +53,20 @@ import sys
 import os
 import getopt
 import logging
-import xmlrpclib
-import StringIO
 import gzip
 import base64
+try:
+    # Python 2
+    import xmlrpclib
+except:
+    # Python 3
+    import xmlrpc.client
+try:
+    # Python 2
+    import StringIO
+except:
+    # Python 3
+    import io
 
 # Global variables
 HASH_SIZE_ERROR = "HashSizeError"
@@ -110,10 +120,13 @@ class subDatabase(object):
     def connect(self):
         # Connect to the Opensubtitles XML/RPC API
         XMLRPC_SERVER = "http://api.opensubtitles.org/xml-rpc"
+        logging.debug("Connect to XML-RPC server %s" % XMLRPC_SERVER)
         try:
-            logging.debug("Connect to XML-RPC server %s" % XMLRPC_SERVER)
-            rpc_server = xmlrpclib.Server(XMLRPC_SERVER)
-        except Exception, msg:
+            if sys.version_info > (3, 0):
+                rpc_server = xmlrpc.client.Server(XMLRPC_SERVER)
+            else:
+                rpc_server = xmlrpclib.Server(XMLRPC_SERVER)
+        except Exception as msg:
             logging.error("%s" % msg)
             return None
 
@@ -121,13 +134,18 @@ class subDatabase(object):
         return rpc_server
 
     def login(self):
+        # Check if you are connected/loggedin
+        if (self.rpc_server is None):
+            logging.error("Should be connected before login")
+            return None
+
         # Login to Opensubtitles XML/RPC API
+        logging.debug("Login to XML-RPC server %s" % self.rpc_server)
         try:
-            logging.debug("Login to XML-RPC server %s" % self.rpc_server)
             self.rpc_login = self.rpc_server.LogIn("", "",
                                                    self.lang,
                                                    __useragent__)
-        except Exception, msg:
+        except Exception as msg:
             logging.error("%s" % msg)
             return None
         else:
@@ -144,12 +162,17 @@ class subDatabase(object):
         return self.rpc_login
 
     def search(self, searchlist):
-            # Search in the subtitles database
+        # Check if you are connected/loggedin
+        if (self.rpc_login is None):
+            logging.error("Should be loggedin before searching")
+            return None
+
+        # Search in the subtitles database
+        logging.debug("Search subtitle in the database")
         try:
-            logging.debug("Search subtitle in the database")
             rpc = self.rpc_server.SearchSubtitles(self.rpc_login["token"],
                                                   searchlist)
-        except Exception, msg:
+        except Exception as msg:
             logging.error("%s" % msg)
             return None
 
@@ -173,7 +196,7 @@ class subDatabase(object):
         try:
             rpc = self.rpc_server.DownloadSubtitles(self.rpc_login["token"],
                                                     [winner_id])
-        except Exception, msg:
+        except Exception as msg:
             logging.error("%s" % msg)
             return GET_DWNL_ERROR
 
@@ -193,7 +216,7 @@ class subDatabase(object):
         try:
             logging.debug("Logout from XML-RPC server %s" % self.rpc_server)
             rpc = self.rpc_server.LogOut(self.rpc_login["token"])
-        except Exception, msg:
+        except Exception as msg:
             logging.error("%s" % msg)
             return None
 
@@ -275,14 +298,14 @@ class subTitle(object):
                           % (self.videofilename, filesize))
             return HASH_SIZE_ERROR
 
-        for x in range(65536 / bytesize):
+        for x in range(int(65536 / bytesize)):
             buffer = f.read(bytesize)
             (l_value,) = struct.unpack(longlongformat, buffer)
             hash += l_value
         hash = hash & 0xFFFFFFFFFFFFFFFF
 
         f.seek(max(0, filesize - 65536), 0)
-        for x in range(65536 / bytesize):
+        for x in range(int(65536 / bytesize)):
             buffer = f.read(bytesize)
             (l_value,) = struct.unpack(longlongformat, buffer)
             hash += l_value
@@ -370,7 +393,7 @@ class subTitle(object):
                       % self.subtitlefilename)
         try:
             open(self.subtitlefilename, 'wb').write(subt_str)
-        except Exception, msg:
+        except Exception as msg:
             logging.error("Can not write to %s (error: %s)"
                           % (self.subtitlefilename, msg))
             return GET_DWNL_ERROR
@@ -382,8 +405,14 @@ class subTitle(object):
         return rpcwinner
 
     def __gunzip__(self, data):
-        data = base64.decodestring(data)
-        return gzip.GzipFile(fileobj=StringIO.StringIO(data)).read()
+        data = base64.decodestring(data.encode('ascii'))
+        if sys.version_info > (3, 0):
+            # Python 3
+            ret = gzip.GzipFile(fileobj=io.BytesIO(data)).read()
+        else:
+            # Python 2
+            ret = gzip.GzipFile(fileobj=StringIO.StringIO(data)).read()
+        return ret
 
     def __fileBase__(self, filename, newext="srt"):
         return filename[:filename.rfind('.')] + "." + newext
