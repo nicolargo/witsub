@@ -7,7 +7,7 @@
 from setuptools import setup
 
 data_files = [
-    ('share/doc/glances', ['AUTHORS', 'README.md'])
+    ('share/doc/witsub', ['AUTHORS', 'README.md'])
 ]
 
 setup(
@@ -24,7 +24,7 @@ setup(
     packages=['witsub'],
     include_package_data=True,
     data_files=data_files,
-    test_suite="witsub.test",
+    # test_suite="witsub.test",
     entry_points={"console_scripts": ["witsub=witsub.witsub:main"]},
     classifiers=[
         'Development Status :: 4 - Beta',
