@@ -34,3 +34,27 @@ After...
 	└── Not a video file.txt
 
 Keep it simple...
+
+## How to install
+
+The simple way to install Witsub is to use the PyPI package index:
+
+	pip install witsub
+
+or to upgrade to the latest version
+
+	pip install --upgrade witsub
+
+## How to use it ?
+
+It can work with file (video file) or path (recursive to video files).
+
+    -f <path>: Path can be video file or folder
+
+Options:
+
+    -v: Display version and exit
+    -V: Switch on debug mode (verbose)
+    -l <lang>: Set the subtitle language search (default is 'eng' for English)
+               Use the ISO 639-2 standard (example 'fre' for French)
+    -w: Force download and overwrite of existing subtitle
