@@ -1,6 +1,7 @@
 Witsub
-Where Is The (fuck..) Subtitle
-==============================
+======
+
+Where Is The (fuck...) Subtitle
 
 A simple command line software to automaticaly download video subtitle.
 It use the [OpenSubtitles.org](http://www.opensubtitles.org/) database and its wonderfull API.
