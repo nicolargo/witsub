@@ -21,36 +21,35 @@
 # Sample from the OpenSubtitles wiki
 # http://trac.opensubtitles.org/projects/opensubtitles/wiki/HashSourceCodes
 
-
+from witsub.witsub import subDatabase, subTitle, NOT_VIDEO_FILE
 import unittest
-import witsub
 
 
 class TestWitsubStat(unittest.TestCase):
 
     def setUp(self):
-        self.subdatabase = witsub.subDatabase(language="eng")
+        self.subdatabase = subDatabase(language="eng")
 
     def test_Witsub_hashFile(self):
         input_file = "./testdata/breakdance.avi"
         hash_file = "8e245d9679d31e12"
-        subtitle = witsub.subTitle(self.subdatabase,
-                                   input_file, overwrite=True)
+        subtitle = subTitle(self.subdatabase,
+                            input_file, overwrite=True)
         self.assertTrue(type(subtitle.getHashFile()) == str)
         self.assertTrue(subtitle.getHashFile() == hash_file)
 
     def test_Witsub_notVideoFile(self):
         input_file = "./testdata/notvideofile"
-        subtitle = witsub.subTitle(self.subdatabase,
-                                   input_file, overwrite=True)
+        subtitle = subTitle(self.subdatabase,
+                            input_file, overwrite=True)
         self.assertTrue(type(subtitle.subtitle == str))
-        self.assertTrue(subtitle.subtitle == witsub.NOT_VIDEO_FILE)
+        self.assertTrue(subtitle.subtitle == NOT_VIDEO_FILE)
 
     def test_Witsub_getSubtitleFileName(self):
         input_file = "./testdata/breakdance.avi"
         output_file = "./testdata/breakdance.srt"
-        subtitle = witsub.subTitle(self.subdatabase,
-                                   input_file, overwrite=True)
+        subtitle = subTitle(self.subdatabase,
+                            input_file, overwrite=True)
         self.assertTrue(type(subtitle.getSubtitleFileName()) == str)
         self.assertTrue(subtitle.getSubtitleFileName() == output_file)
 

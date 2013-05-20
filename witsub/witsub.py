@@ -89,6 +89,9 @@ VIDEO_EXT = ('.3g2', '.3gp', '.3gp2', '.3gpp', '.60d', '.ajp', '.asf',
              '.vid', '.video', '.viv', '.vivo', '.vob', '.vro', '.wm',
              '.wmv', '.wmx', '.wrap', '.wvx', '.wx', '.x264', '.xvid')
 
+# Limit import to
+__all__ = ['subDatabase', 'subTitle']
+
 
 # Classes
 class subDatabase(object):
