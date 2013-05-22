@@ -21,7 +21,8 @@
 # Sample from the OpenSubtitles wiki
 # http://trac.opensubtitles.org/projects/opensubtitles/wiki/HashSourceCodes
 
-from witsub.witsub import subDatabase, subTitle, NOT_VIDEO_FILE
+from witsub.witsub import subDatabase, subTitle
+from witsub.witsub import NOT_VIDEO_FILE, GET_SUB_UNKNOWN, SUB_ALREADY_EXIST
 import unittest
 
 
@@ -38,6 +39,25 @@ class TestWitsubStat(unittest.TestCase):
         self.assertTrue(type(subtitle.getHashFile()) == str)
         self.assertTrue(subtitle.getHashFile() == hash_file)
 
+    def test_Witsub_subtitleOk(self):
+        input_file = "./testdata/breakdance.avi"
+        output_file = "./testdata/breakdance.srt"
+        subtitle = subTitle(self.subdatabase,
+                            input_file, overwrite=True)
+        self.assertTrue(type(subtitle.getSubtitleFileName()) == str)
+        self.assertTrue(subtitle.getSubtitleFileName() == output_file)
+
+    def test_Witsub_alreadyExist(self):
+        input_file = "./testdata/breakdance.avi"
+        output_file = "./testdata/breakdance.srt"
+        subtitle = subTitle(self.subdatabase,
+                            input_file, overwrite=True)
+        subtitle = subTitle(self.subdatabase,
+                            input_file, overwrite=False)
+        self.assertTrue(type(subtitle.getSubtitleFileName()) == str)
+        self.assertTrue(subtitle.getSubtitleFileName() == output_file)
+        self.assertTrue(subtitle.subtitle == SUB_ALREADY_EXIST)
+
     def test_Witsub_notVideoFile(self):
         input_file = "./testdata/notvideofile"
         subtitle = subTitle(self.subdatabase,
@@ -45,13 +65,15 @@ class TestWitsubStat(unittest.TestCase):
         self.assertTrue(type(subtitle.subtitle == str))
         self.assertTrue(subtitle.subtitle == NOT_VIDEO_FILE)
 
-    def test_Witsub_getSubtitleFileName(self):
+    def test_Witsub_nonExisting(self):
         input_file = "./testdata/breakdance.avi"
-        output_file = "./testdata/breakdance.srt"
+        self.subdatabase.setLang("fre")
         subtitle = subTitle(self.subdatabase,
                             input_file, overwrite=True)
+        self.subdatabase.setLang("eng")
         self.assertTrue(type(subtitle.getSubtitleFileName()) == str)
-        self.assertTrue(subtitle.getSubtitleFileName() == output_file)
+        self.assertTrue(subtitle.getSubtitleFileName() == "")
+        self.assertTrue(subtitle.subtitle == GET_SUB_UNKNOWN)
 
 if __name__ == '__main__':
     unittest.main()

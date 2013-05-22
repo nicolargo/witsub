@@ -22,7 +22,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 __appname__ = "witsub"
-__version__ = "1.1"
+__version__ = "1.2"
 __author__ = "Nicolas Hennion <nicolas@nicolargo.com>"
 __licence__ = "LGPL"
 # TODO: Register a dedicated user agent:
@@ -108,6 +108,10 @@ class subDatabase(object):
 
     def __del__(self):
         self.logout()
+
+    def setLang(self, language="eng"):
+        self.lang = language
+        return self.lang
 
     def open(self):
         if self.rpc_server is None:
@@ -265,9 +269,15 @@ class subTitle(object):
                 self.subtitle = HASH_SIZE_ERROR
 
     def getVideoFileName(self):
+        '''
+        Return the video file name (input)
+        '''
         return self.videofilename
 
     def getHashFile(self):
+        '''
+        Return the hash of the video file
+        '''
         try:
             self.hash
         except:
@@ -276,7 +286,12 @@ class subTitle(object):
             return self.hash
 
     def getSubtitleFileName(self):
-        if type(self.subtitle) == type(dict()):
+        '''
+        Return the subtile path (output)
+        '''
+        if (type(self.subtitle) == type(dict())):
+            return self.subtitlefilename
+        elif (self.subtitle == SUB_ALREADY_EXIST):
             return self.subtitlefilename
         else:
             return ""
@@ -346,7 +361,7 @@ class subTitle(object):
 
         # No subtitle found with the first method
         if not rpcdata:
-            logging.debug("No subtitle found")
+            logging.info("No subtitle found for %s" % (self.videofilename))
             # TODO: If not find, try the 2e method: http://alturl.com/kef8a
             return GET_SUB_UNKNOWN
 
