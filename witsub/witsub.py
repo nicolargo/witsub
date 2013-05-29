@@ -25,9 +25,9 @@ __appname__ = "witsub"
 __version__ = "1.2"
 __author__ = "Nicolas Hennion <nicolas@nicolargo.com>"
 __licence__ = "LGPL"
-# TODO: Register a dedicated user agent:
-# http://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst
-__useragent__ = "OS Test User Agent"
+# Registered user agent for witsub
+__useragent__ = "witsub"
+# Syntax
 __doc__ = '''\
 Usage: witsub [options] -f <path>
 
