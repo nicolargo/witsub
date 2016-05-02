@@ -6,7 +6,7 @@
 #
 # A simple command line to search and retrieve subtitles of video files
 #
-# Copyright (C) 2013 Nicolargo <nicolas@nicolargo.com>
+# Copyright (C) 2016 Nicolargo <nicolas@nicolargo.com>
 #
 # Witsub is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -22,7 +22,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 __appname__ = "witsub"
-__version__ = "1.2"
+__version__ = "1.2.1"
 __author__ = "Nicolas Hennion <nicolas@nicolargo.com>"
 __licence__ = "LGPL"
 # Registered user agent for witsub
